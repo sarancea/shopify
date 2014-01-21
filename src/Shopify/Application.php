@@ -49,6 +49,11 @@ class Application
     protected $_clientId;
 
     /**
+     * @var string
+     */
+    protected $_redirectUri;
+
+    /**
      * Application secret
      *
      * @var string
@@ -104,11 +109,29 @@ class Application
 
     /**
      * @param string $clientSecret
-     * @return Appliaction
+     * @return Application
      */
     public function setClientSecret($clientSecret)
     {
         $this->_clientSecret = $clientSecret;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectUri()
+    {
+        return $this->_redirectUri;
+    }
+
+    /**
+     * @param string $redirectUri
+     * @return Application
+     */
+    public function setRedirectUri($redirectUri)
+    {
+        $this->_redirectUri = $redirectUri;
         return $this;
     }
 }

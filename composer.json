@@ -1,0 +1,15 @@
+{
+    "name": "sarancea/shopify",
+    "description": "Shopify Library for Phalcon framework",
+    "authors": [
+        {
+            "name": "Alexandr Budeac",
+            "email": "alex.budeac@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "ext-phalcon": "1.2.4",
+        "phalcon/incubator": "v1.2.4"
+    }
+}

@@ -1,2 +1,4 @@
 .phlacon
 .idea
+vendor
+.lock

@@ -1,4 +1,4 @@
 .phlacon
 .idea
 vendor
-.lock
+*.lock

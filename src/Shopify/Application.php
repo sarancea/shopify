@@ -159,7 +159,7 @@ class Application
         ksort($queryParams);
 
         //# Join the array elements into a string
-        array_walk($queryParams, function ($v, $k) use ($calculatedSignature) {
+        array_walk($queryParams, function ($v, $k) use (&$calculatedSignature) {
             $calculatedSignature .= $k . "=" . $v;
         });
 

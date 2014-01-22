@@ -18,5 +18,4 @@ abstract class EntityAbstract
         return $this->_baseUri;
     }
 
-
 }

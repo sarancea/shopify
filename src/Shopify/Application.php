@@ -134,4 +134,38 @@ class Application
         $this->_redirectUri = $redirectUri;
         return $this;
     }
+
+    /**
+     * Verify is request params are valid
+     *
+     * @param array $queryParams
+     * @return bool
+     * @throws Exception
+     */
+    public function validateRequest(array $queryParams)
+    {
+        /** Check for signature */
+        if (!isset($queryParams['signature'])) {
+            throw new Exception('Query params should contain signature.');
+        }
+
+        $signature = $queryParams['signature'];
+        $calculatedSignature = $this->getClientSecret();
+
+        //# Remove the "signature" entry, we don't need it.
+        unset($queryParams['signature']);
+
+        //# Sort the key/value pairs in the array
+        ksort($queryParams);
+
+        //# Join the array elements into a string
+        array_walk($queryParams, function ($v, $k) use ($calculatedSignature) {
+            $calculatedSignature .= $k . "=" . $v;
+        });
+
+        $calculatedSignature = md5($calculatedSignature);
+
+        //This calculated signature should match the one in the original URL.
+        return ($signature == $calculatedSignature);
+    }
 }

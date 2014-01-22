@@ -43,6 +43,11 @@ class Application
     protected $_scope;
 
     /**
+     * @var string
+     */
+    protected $_baseUri;
+
+    /**
      * Application ID
      * @var string
      */
@@ -58,7 +63,38 @@ class Application
      *
      * @var string
      */
-    protected $_clientSecret;
+    protected static $_clientSecret;
+
+    /**
+     * The access token
+     * @var string
+     */
+    protected $_accessToken;
+
+
+    /**
+     * Set up application base uri
+     *
+     * @param string $baseUri
+     * @return $this
+     */
+    public function setBaseUri($baseUri)
+    {
+        $this->_baseUri = $baseUri;
+        return $this;
+    }
+
+
+    /**
+     * Returns shop base uri
+     *
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->_baseUri;
+    }
+
 
     /**
      * Returns the list of scopes
@@ -104,7 +140,7 @@ class Application
      */
     public function getClientSecret()
     {
-        return $this->_clientSecret;
+        return self::$_clientSecret;
     }
 
     /**
@@ -113,7 +149,7 @@ class Application
      */
     public function setClientSecret($clientSecret)
     {
-        $this->_clientSecret = $clientSecret;
+        self::$_clientSecret = $clientSecret;
         return $this;
     }
 
@@ -142,7 +178,7 @@ class Application
      * @return bool
      * @throws Exception
      */
-    public function validateRequest(array $queryParams)
+    public static function validateRequest(array $queryParams)
     {
         /** Check for signature */
         if (!isset($queryParams['signature'])) {
@@ -150,7 +186,7 @@ class Application
         }
 
         $signature = $queryParams['signature'];
-        $calculatedSignature = $this->getClientSecret();
+        $calculatedSignature = self::$_clientSecret;
 
         //# Remove the "signature" entry, we don't need it.
         unset($queryParams['signature']);
@@ -168,4 +204,26 @@ class Application
         //This calculated signature should match the one in the original URL.
         return ($signature == $calculatedSignature);
     }
+
+    /**
+     * Return Access Token
+     *
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->_accessToken;
+    }
+
+    /**
+     * Set application ACCESS TOKEN for API
+     * @param string $accessToken
+     * @return $this
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->_accessToken = $accessToken;
+        return $this;
+    }
+
 }

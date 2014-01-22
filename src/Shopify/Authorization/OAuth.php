@@ -3,7 +3,6 @@ namespace Shopify\Authorization;
 
 use Phalcon\Http\Client\Provider\Curl;
 use Shopify\Application;
-use Shopify\Entity\Shop;
 use Shopify\Exception;
 
 class OAuth
@@ -35,11 +34,10 @@ class OAuth
     /**
      * Generates authorization url
      *
-     * @param Shop $shop
      * @return string
      * @throws \Shopify\Exception
      */
-    public function generateAuthorizationUrl(Shop $shop)
+    public function generateAuthorizationUrl()
     {
         /** Check if application is already set */
         if (!isset($this->_application)) {
@@ -67,18 +65,17 @@ class OAuth
         //Build query
         $queryParams = http_build_query($params, '', '&');
 
-        return 'https://' . $shop->getName() . '.myshopify.com/admin/oauth/authorize?' . $queryParams;
+        return $this->getApplication()->getBaseUri() . '/admin/oauth/authorize?' . $queryParams;
     }
 
     /**
      * Returns API access token
      *
-     * @param Shop $shop
      * @param string $authorizationCode
      * @return string
      * @throws \Shopify\Exception
      */
-    public function generateAccessToken(Shop $shop, $authorizationCode)
+    public function generateAccessToken($authorizationCode)
     {
         /** Check if application is already set */
         if (!isset($this->_application)) {
@@ -98,7 +95,7 @@ class OAuth
         }
 
         $httpClient = new Curl();
-        $httpClient->setOptions('https://' . $shop->getName() . '.myshopify.com');
+        $httpClient->setOptions($this->getApplication()->getBaseUri());
         $result = $httpClient->post('/admin/oauth/access_token', [
             'client_id' => $clientId,
             'client_secret' => $clientSecret,
@@ -106,7 +103,7 @@ class OAuth
         ]);
 
         //Check response code
-        if ($result->header->statusCode != 200) {
+        if ($result->header->statusCode < 200 || $result->header->statusCode > 300) {
             throw new Exception($result->header->statusMessage, $result->header->statusCode);
         }
 
@@ -121,6 +118,9 @@ class OAuth
         if (isset($response['access_token'])) {
             throw new Exception("Couldn't found access token in response [" . var_export($response, true) . "]");
         }
+
+        //Set access token to application object
+        $this->getApplication()->setAccessToken($response['access_token']);
 
         return $response['access_token'];
     }

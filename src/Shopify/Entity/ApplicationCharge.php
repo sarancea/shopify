@@ -21,6 +21,15 @@ class ApplicationCharge extends EntityAbstract
      */
     protected $_returnUrl;
 
+    /**
+     * Options list
+     * @var array
+     */
+    protected $_options = [
+        'since_id' => null,
+        'fields' => null,
+    ];
+
 
     /**
      * Return test flag
@@ -138,27 +147,14 @@ class ApplicationCharge extends EntityAbstract
     /**
      * All charges that have been requested are retrieved by this request.
      *
-     * @param int|null $sinceId Restrict results to after the specified ID
-     * @param string|null $fields comma-separated list of fields to include in the response
      * @throws \Shopify\Exception
      * @return \Shopify\Resource\ApplicationCharge[]
      */
-    public function getChargesList($sinceId = null, $fields = null)
+    public function getChargesList()
     {
-        //Prepare request params
-        $requestParams = [
-        ];
-
-        if (!is_null($sinceId)) {
-            $requestParams['since_id'] = $sinceId;
-        }
-
-        if (!is_null($fields)) {
-            $requestParams['fields'] = $fields;
-        }
 
         // Make an API call
-        $response = $this->_request('/admin/application_charges.json', $requestParams);
+        $response = $this->_request('/admin/application_charges.json', $this->getOptions());
 
         //Check if response contains 'application_charge' object
         if (!isset($response['application_charge'])) {

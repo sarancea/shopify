@@ -14,6 +14,12 @@ abstract class EntityAbstract
 {
 
     /**
+     * Options list
+     * @var array
+     */
+    protected $_options = [];
+
+    /**
      * @var Application
      */
     protected $_application;
@@ -149,6 +155,44 @@ abstract class EntityAbstract
         }
     }
 
+    /**
+     * Returns the list of options
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->_options;
+    }
+
+    /**
+     * Returns option value by it's name
+     * @param string $name
+     * @return bool
+     */
+    public function getOptionByName($name)
+    {
+        if (array_key_exists($name, $this->_options)) {
+            return $this->_options[$name];
+        }
+        return false;
+    }
+
+    /**
+     * Set the list of options
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        foreach ($options as $optionKey => $optionValue) {
+            if (array_key_exists($optionKey, $this->_options)) {
+                $this->_options[$optionKey] = $optionValue;
+            }
+        }
+
+        return $this;
+    }
+
 
     /**
      * Make a request to Shopify API
@@ -188,6 +232,13 @@ abstract class EntityAbstract
                 $uri .= '&';
             else
                 $uri .= '?';
+
+            //Unset params with null value
+            array_walk($params, function ($k, $v) use (&$params) {
+                if (is_null($v)) {
+                    unset($params[$k]);
+                }
+            });
 
             //Build query string from params
             $uri .= http_build_query($params, '', '&');

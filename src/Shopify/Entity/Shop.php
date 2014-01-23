@@ -1,29 +1,35 @@
 <?php
 namespace Shopify\Entity;
 
+use Shopify\Exception;
+
+/**
+ * Class Shop
+ * @package Shopify\Entity
+ */
 class Shop extends EntityAbstract
 {
     /**
-     * @var string
+     * Get the configuration of the shop account
+     *
+     * @return \Shopify\Resource\Shop
+     * @throws \Shopify\Exception
      */
-    protected $_name;
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getConfig()
     {
-        return $this->_name;
-    }
+        // Make an API call
+        $response = $this->_request('/admin/shop.json');
 
-    /**
-     * @param string $name
-     * @return Shop
-     */
-    public function setName($name)
-    {
-        $this->_name = $name;
+        //Check if response contains 'application_charge' object
+        if (!isset($response['shop'])) {
+            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
+        }
 
-        return $this;
+        $shopData = $response['shop'];
+
+        $shopObject = new \Shopify\Resource\Shop();
+        $shopObject->fillObjectFromArray($shopData);
+
+        return $shopObject;
     }
 }

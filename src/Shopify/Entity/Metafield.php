@@ -113,6 +113,109 @@ class Metafield extends EntityAbstract
 
 
     /**
+     * Create a new metafield for a store
+     *
+     * @param \Shopify\Resource\Metafield $metafield
+     * @return \Shopify\Resource\Metafield
+     */
+    public function createStoreMetafield(\Shopify\Resource\Metafield $metafield)
+    {
+        $response = $this->_request(
+            '/admin/metafields.json',
+            $metafield->toArray(),
+            EntityAbstract::METH_POST
+        );
+
+        return $this->_processMetafield($response);
+    }
+
+    /**
+     * Create a new metafield for a product
+     *
+     * @param int $productId
+     * @param \Shopify\Resource\Metafield $metafield
+     * @return \Shopify\Resource\Metafield
+     */
+    public function createProductMetafield($productId, \Shopify\Resource\Metafield $metafield)
+    {
+        $response = $this->_request(
+            '/admin/products/' . $productId . '/metafields.json',
+            $metafield->toArray(),
+            EntityAbstract::METH_POST
+        );
+
+        return $this->_processMetafield($response);
+    }
+
+    /**
+     * Update a store metafield
+     *
+     * @param \Shopify\Resource\Metafield $metafield
+     * @return \Shopify\Resource\Metafield
+     * @throws \Shopify\Exception
+     */
+    public function updateStoreMetafield(\Shopify\Resource\Metafield $metafield)
+    {
+        if ((int)$metafield->getId() <= 0) {
+            throw new Exception('Metafield should have an ID.');
+        }
+
+        $response = $this->_request(
+            '/admin/metafields/' . $metafield->getId() . '.json',
+            $metafield->toArray(),
+            EntityAbstract::METH_PUT
+        );
+
+        return $this->_processMetafield($response);
+    }
+
+    /**
+     * Update a product metafield
+     *
+     * @param int $productId
+     * @param \Shopify\Resource\Metafield $metafield
+     * @throws \Shopify\Exception
+     * @return \Shopify\Resource\Metafield
+     */
+    public function updateProductMetafield($productId, \Shopify\Resource\Metafield $metafield)
+    {
+        if ((int)$metafield->getId() <= 0) {
+            throw new Exception('Metafield should have an ID.');
+        }
+
+        $response = $this->_request(
+            '/admin/products/' . $productId . '/metafields/' . $metafield->getId() . '.json',
+            $metafield->toArray(),
+            EntityAbstract::METH_PUT
+        );
+
+        return $this->_processMetafield($response);
+    }
+
+
+    /**
+     * Delete a store metafield
+     * @param int $metafieldId
+     * @return void
+     */
+    public function deleteStoreMetafield($metafieldId)
+    {
+        $this->_request('/admin/metafields/' . $metafieldId . '.json', [], EntityAbstract::METH_DELETE);
+    }
+
+    /**
+     * Delete a product metafield
+     *
+     * @param int $productId
+     * @param int $metafieldId
+     * @return void
+     */
+    public function deleteProductMetafield($productId, $metafieldId)
+    {
+        $this->_request('/admin/products/' . $productId . '/metafields/' . $metafieldId . '.json', [], EntityAbstract::METH_DELETE);
+    }
+
+    /**
      * Internal processor of a single metafield response
      * @param array $response
      * @return \Shopify\Resource\Metafield
@@ -156,4 +259,5 @@ class Metafield extends EntityAbstract
 
         return $metafieldsObjectsList;
     }
+
 }

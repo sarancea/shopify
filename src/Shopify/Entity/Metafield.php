@@ -31,7 +31,7 @@ class Metafield extends EntityAbstract
     public function getStoreMetafields()
     {
         $response = $this->_request('/admin/metafields.json', $this->getOptions());
-        return $this->_processMetafields($response);
+        return $this->_parseMultipleObjects($response, 'metafields', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -56,7 +56,7 @@ class Metafield extends EntityAbstract
     {
         $response = $this->_request('/admin/metafields.json?metafield[owner_id]='
             . $productImageId . '&metafield[owner_resource]=product_image', $this->getOptions());
-        return $this->_processMetafields($response);
+        return $this->_parseMultipleObjects($response, 'metafields', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -67,7 +67,7 @@ class Metafield extends EntityAbstract
     public function getProductMetafields($productId)
     {
         $response = $this->_request('/admin/products/' . $productId . '/metafields.json', $this->getOptions());
-        return $this->_processMetafields($response);
+        return $this->_parseMultipleObjects($response, 'metafields', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -93,7 +93,7 @@ class Metafield extends EntityAbstract
     {
         $response = $this->_request('/admin/metafields/' . $metafieldId . '.json', $this->getOptions());
 
-        return $this->_processMetafield($response);
+        return $this->_parseSingleObject($response, 'metafield', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -108,7 +108,7 @@ class Metafield extends EntityAbstract
         $response = $this->_request('/admin/products/' . $productId . '/metafields/' . $metafieldId . '.json',
             $this->getOptions());
 
-        return $this->_processMetafield($response);
+        return $this->_parseSingleObject($response, 'metafield', '\Shopify\Resource\Metafield');
     }
 
 
@@ -126,7 +126,7 @@ class Metafield extends EntityAbstract
             EntityAbstract::METH_POST
         );
 
-        return $this->_processMetafield($response);
+        return $this->_parseSingleObject($response, 'metafield', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -144,7 +144,7 @@ class Metafield extends EntityAbstract
             EntityAbstract::METH_POST
         );
 
-        return $this->_processMetafield($response);
+        return $this->_parseSingleObject($response, 'metafield', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -166,7 +166,7 @@ class Metafield extends EntityAbstract
             EntityAbstract::METH_PUT
         );
 
-        return $this->_processMetafield($response);
+        return $this->_parseSingleObject($response, 'metafield', '\Shopify\Resource\Metafield');
     }
 
     /**
@@ -189,7 +189,7 @@ class Metafield extends EntityAbstract
             EntityAbstract::METH_PUT
         );
 
-        return $this->_processMetafield($response);
+        return $this->_parseSingleObject($response, 'metafield', '\Shopify\Resource\Metafield');
     }
 
 
@@ -215,49 +215,5 @@ class Metafield extends EntityAbstract
         $this->_request('/admin/products/' . $productId . '/metafields/' . $metafieldId . '.json', [], EntityAbstract::METH_DELETE);
     }
 
-    /**
-     * Internal processor of a single metafield response
-     * @param array $response
-     * @return \Shopify\Resource\Metafield
-     * @throws \Shopify\Exception
-     */
-    protected function _processMetafield($response)
-    {
-        if (!isset($response['metafield'])) {
-            throw new Exception('Response is not valid. Response: ' . var_export($response, true));
-        }
-
-        $metafieldData = $response['metafield'];
-
-        $metafieldObject = new \Shopify\Resource\Metafield();
-        $metafieldObject->fillObjectFromArray($metafieldData);
-
-        return $metafieldObject;
-    }
-
-    /**
-     * Internal processor of metafields response
-     * @param array $response
-     * @return \Shopify\Resource\Metafield[]
-     * @throws \Shopify\Exception
-     */
-    protected function _processMetafields($response)
-    {
-        if (!isset($response['metafields'])) {
-            throw new Exception('Response is not valid. Response :' . var_export($response, true));
-        }
-
-        $metafieldsDataList = $response['metafields'];
-        $metafieldsObjectsList = [];
-
-        foreach ($metafieldsDataList as $metafieldData) {
-            $metafieldObject = new \Shopify\Resource\Metafield();
-            $metafieldObject->fillObjectFromArray($metafieldData);
-
-            $metafieldsObjectsList[] = $metafieldObject;
-        }
-
-        return $metafieldsObjectsList;
-    }
 
 }

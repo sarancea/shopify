@@ -5,6 +5,7 @@ namespace Shopify\Entity;
 use Phalcon\Http\Client\Provider\Curl;
 use Shopify\Application;
 use Shopify\Exception;
+use Shopify\Resource\ResourceAbstract;
 
 /**
  * Abstract entity class
@@ -193,6 +194,55 @@ abstract class EntityAbstract
         return $this;
     }
 
+
+    /**
+     * @param string $response
+     * @param string $name
+     * @param string $objectName
+     * @return ResourceAbstract
+     * @throws \Shopify\Exception
+     */
+    protected function _parseSingleObject($response, $name, $objectName)
+    {
+        if (!isset($response[$name])) {
+            throw new Exception('Response is not valid. Response: ' . var_export($response, true));
+        }
+
+        $data = $response[$name];
+        /** @var ResourceAbstract $object */
+        $object = new $objectName();
+        $object->fillObjectFromArray($data);
+
+        return $object;
+    }
+
+    /**
+     *
+     * @param string $response
+     * @param string $name
+     * @param string $objectName
+     * @return ResourceAbstract[]
+     * @throws \Shopify\Exception
+     */
+    protected function _parseMultipleObjects($response, $name, $objectName)
+    {
+        if (!isset($response[$name])) {
+            throw new Exception('Response is not valid. Response :' . var_export($response, true));
+        }
+
+        $dataList = $response[$name];
+        $objectsList = [];
+
+        foreach ($dataList as $data) {
+            /** @var ResourceAbstract $object */
+            $object = new $objectName();
+            $object->fillObjectFromArray($data);
+
+            $objectsList[] = $object;
+        }
+
+        return $objectsList;
+    }
 
     /**
      * Make a request to Shopify API

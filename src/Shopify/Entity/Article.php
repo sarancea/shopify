@@ -37,23 +37,7 @@ class Article extends EntityAbstract
         // Make an API call
         $response = $this->_request('/admin/blogs/' . $blogId . '/articles.json', $this->getOptions());
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['articles'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $articlesList = $response['articles'];
-
-        $articlesObjectsList = [];
-
-        //Parse all application charges
-        foreach ($articlesList as $articleData) {
-            $articleObject = new \Shopify\Resource\Article();
-            $articleObject->fillObjectFromArray($articleData);
-            $articlesObjectsList[] = $articleObject;
-        }
-
-        return $articlesObjectsList;
+        return $this->_parseMultipleObjects($response, 'articles', '\Shopify\Resource\Article');
     }
 
     /**
@@ -90,17 +74,7 @@ class Article extends EntityAbstract
         // Make an API call
         $response = $this->_request('/admin/blogs/' . $blogId . '/articles/' . $articleId . '.json', $this->getOptions());
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['article'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $articleData = $response['article'];
-        $articleObject = new \Shopify\Resource\Article();
-
-        $articleObject->fillObjectFromArray($articleData);
-
-        return $articleObject;
+        return $this->_parseSingleObject($response, 'article', '\Shopify\Resource\Article');
     }
 
 
@@ -117,17 +91,7 @@ class Article extends EntityAbstract
         $response = $this->_request('/admin/blogs/' . $blogId . '/articles.json',
             ['article' => $article->toArray()], EntityAbstract::METH_POST);
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['article'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $articleData = $response['article'];
-        $articleObject = new \Shopify\Resource\Article();
-
-        $articleObject->fillObjectFromArray($articleData);
-
-        return $articleObject;
+        return $this->_parseSingleObject($response, 'article', '\Shopify\Resource\Article');
     }
 
     /**
@@ -148,17 +112,7 @@ class Article extends EntityAbstract
         $response = $this->_request('/admin/blogs/' . $blogId . '/articles/' . $article->getId() . '.json',
             ['article' => $article->toArray()], EntityAbstract::METH_PUT);
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['article'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $articleData = $response['article'];
-        $articleObject = new \Shopify\Resource\Article();
-
-        $articleObject->fillObjectFromArray($articleData);
-
-        return $articleObject;
+        return $this->_parseSingleObject($response, 'article', '\Shopify\Resource\Article');
     }
 
 

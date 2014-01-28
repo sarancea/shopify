@@ -1,8 +1,6 @@
 <?php
 namespace Shopify\Entity;
 
-use Shopify\Exception;
-
 class Asset extends EntityAbstract
 {
     /**
@@ -24,23 +22,7 @@ class Asset extends EntityAbstract
         // Make an API call
         $response = $this->_request('/admin/themes/' . $themeId . '/assets.json', $this->getOptions());
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['assets'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $assetsList = $response['assets'];
-
-        $assetsObjectsList = [];
-
-        //Parse all application charges
-        foreach ($assetsList as $assetData) {
-            $assetObject = new \Shopify\Resource\Asset();
-            $assetObject->fillObjectFromArray($assetData);
-            $assetsObjectsList[] = $assetObject;
-        }
-
-        return $assetsObjectsList;
+        return $this->_parseMultipleObjects($response, 'assets', '\Shopify\Resource\Asset');
     }
 
     /**
@@ -58,17 +40,7 @@ class Asset extends EntityAbstract
             array_merge(['asset[key]' => $assetKey, 'theme_id' => $themeId], $this->getOptions())
         );
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['asset'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $assetsData = $response['asset'];
-        $assetObject = new \Shopify\Resource\Asset();
-
-        $assetObject->fillObjectFromArray($assetsData);
-
-        return $assetObject;
+        $this->_parseSingleObject($response, 'asset', '\Shopify\Resource\Asset');
     }
 
     /**
@@ -88,17 +60,7 @@ class Asset extends EntityAbstract
             EntityAbstract::METH_PUT
         );
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['asset'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $assetsData = $response['asset'];
-        $assetObject = new \Shopify\Resource\Asset();
-
-        $assetObject->fillObjectFromArray($assetsData);
-
-        return $assetObject;
+        $this->_parseSingleObject($response, 'asset', '\Shopify\Resource\Asset');
 
     }
 

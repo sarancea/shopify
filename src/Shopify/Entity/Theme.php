@@ -24,20 +24,7 @@ class Theme extends EntityAbstract
     {
         $response = $this->_request('/admin/themes.json', $this->getOptions());
 
-        if (!isset($response['themes'])) {
-            throw new Exception('Response is not valid. Response :' . var_export($response, true));
-        }
-
-        $themesList = $response['themes'];
-        $themesObjectsList = [];
-
-        foreach ($themesList as $themeData) {
-            $themeObject = new \Shopify\Resource\Theme();
-            $themeObject->fillObjectFromArray($themeData);
-            $themesObjectsList[] = $themeObject;
-        }
-
-        return $themesObjectsList;
+        return $this->_parseMultipleObjects($response, 'themes', '\Shopify\Resource\Theme');
     }
 
     /**
@@ -51,15 +38,7 @@ class Theme extends EntityAbstract
     {
         $response = $this->_request('/admin/themes/' . $themeId . '.json', $this->getOptions());
 
-        if (!isset($response['theme'])) {
-            throw new Exception('Response is not valid. Response :' . var_export($response, true));
-        }
-
-        $themeData = $response['theme'];
-        $themeObject = new \Shopify\Resource\Theme();
-        $themeObject->fillObjectFromArray($themeData);
-
-        return $themeObject;
+        return $this->_parseSingleObject($response, 'theme', '\Shopify\Resource\Theme');
     }
 
     /**
@@ -73,15 +52,7 @@ class Theme extends EntityAbstract
     {
         $response = $this->_request('/admin/themes.json', $theme->toArray(), EntityAbstract::METH_POST);
 
-        if (!isset($response['theme'])) {
-            throw new Exception('Response is not valid. Response :' . var_export($response, true));
-        }
-
-        $themeData = $response['theme'];
-        $themeObject = new \Shopify\Resource\Theme();
-        $themeObject->fillObjectFromArray($themeData);
-
-        return $themeObject;
+        return $this->_parseSingleObject($response, 'theme', '\Shopify\Resource\Theme');
     }
 
     /**
@@ -101,15 +72,7 @@ class Theme extends EntityAbstract
 
         $response = $this->_request('/admin/themes/' . $theme->getId() . '.json', $theme->toArray(), EntityAbstract::METH_PUT);
 
-        if (!isset($response['theme'])) {
-            throw new Exception('Response is not valid. Response :' . var_export($response, true));
-        }
-
-        $themeData = $response['theme'];
-        $themeObject = new \Shopify\Resource\Theme();
-        $themeObject->fillObjectFromArray($themeData);
-
-        return $themeObject;
+        return $this->_parseSingleObject($response, 'theme', '\Shopify\Resource\Theme');
     }
 
     /**

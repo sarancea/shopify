@@ -1,8 +1,6 @@
 <?php
 namespace Shopify\Entity;
 
-use Shopify\Exception;
-
 /**
  * Class ApplicationCharge
  * @link http://docs.shopify.com/api/applicationcharge
@@ -11,15 +9,6 @@ use Shopify\Exception;
 class ApplicationCharge extends EntityAbstract
 {
 
-    /**
-     * @var bool
-     */
-    protected $_isTest;
-
-    /**
-     * @var string
-     */
-    protected $_returnUrl;
 
     /**
      * Options list
@@ -30,91 +19,19 @@ class ApplicationCharge extends EntityAbstract
         'fields' => null,
     ];
 
-
-    /**
-     * Return test flag
-     *
-     * @return boolean
-     */
-    public function getIsTest()
-    {
-        return $this->_isTest;
-    }
-
-    /**
-     * Setting this to TRUE will set the ApplicationCharge to not actually charge the credit card it otherwise would.
-     *
-     * @param boolean $isTest
-     * @return $this
-     */
-    public function setIsTest($isTest)
-    {
-        $this->_isTest = $isTest;
-        return $this;
-    }
-
-    /**
-     * Return the URL is sent to once they accept/decline a charge.
-     *
-     * @return string
-     */
-    public function getReturnUrl()
-    {
-        return $this->_returnUrl;
-    }
-
-    /**
-     * Set the URL the customer is sent to once they accept/decline a charge.
-     *
-     * @param string $returnUrl
-     * @return $this
-     */
-    public function setReturnUrl($returnUrl)
-    {
-        $this->_returnUrl = $returnUrl;
-        return $this;
-    }
-
-
     /**
      * Create a new one-time application charge.
      *
-     * @param float $price
-     * @param string $name
+     * @param \Shopify\Resource\ApplicationCharge $applicationCharge
      * @return \Shopify\Resource\ApplicationCharge
-     * @throws \Shopify\Exception
      */
-    public function createCharge($price, $name)
+    public function createCharge(\Shopify\Resource\ApplicationCharge $applicationCharge)
     {
 
-        //Generate params for request
-        $requestParams = [
-            'application_charge' => [
-                'name' => $name,
-                'price' => number_format($price, 2, '.', ''),
-                'return_url' => $this->getReturnUrl(),
-            ]
-        ];
-
-        /** Set test flag */
-        if ($this->getIsTest() == true) {
-            $requestParams['application_charge']['test'] = true;
-        }
-
         // Make an API call
-        $response = $this->_request('/admin/application_charges.json', $requestParams, ApplicationCharge::METH_POST);
+        $response = $this->_request('/admin/application_charges.json', $applicationCharge->toArray(), ApplicationCharge::METH_POST);
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['application_charge'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $applicationChargeData = $response['application_charge'];
-
-        $applicationChargeObject = new \Shopify\Resource\ApplicationCharge();
-        $applicationChargeObject->fillObjectFromArray($applicationChargeData);
-
-        return $applicationChargeObject;
+        return $this->_parseSingleObject($response, 'application_charge', '\Shopify\Resource\ApplicationCharge');
     }
 
 
@@ -130,17 +47,7 @@ class ApplicationCharge extends EntityAbstract
         // Make an API call
         $response = $this->_request('/admin/application_charges/' . $chargeId . '.json');
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['application_charge'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $applicationChargeData = $response['application_charge'];
-
-        $applicationChargeObject = new \Shopify\Resource\ApplicationCharge();
-        $applicationChargeObject->fillObjectFromArray($applicationChargeData);
-
-        return $applicationChargeObject;
+        return $this->_parseSingleObject($response, 'application_charge', '\Shopify\Resource\ApplicationCharge');
     }
 
 
@@ -156,23 +63,7 @@ class ApplicationCharge extends EntityAbstract
         // Make an API call
         $response = $this->_request('/admin/application_charges.json', $this->getOptions());
 
-        //Check if response contains 'application_charge' object
-        if (!isset($response['application_charge'])) {
-            throw new Exception('Response is not valid. Response dump: ' . var_export($response, true));
-        }
-
-        $applicationChargeList = $response['application_charge'];
-
-        $applicationChargeObjectsList = [];
-
-        //Parse all application charges
-        foreach ($applicationChargeList as $applicationChargeData) {
-            $applicationChargeObject = new \Shopify\Resource\ApplicationCharge();
-            $applicationChargeObject->fillObjectFromArray($applicationChargeData);
-            $applicationChargeObjectsList[] = $applicationChargeObject;
-        }
-
-        return $applicationChargeObjectsList;
+        return $this->_parseMultipleObjects($response, 'application_charges', '\Shopify\Resource\ApplicationCharge');
     }
 
 

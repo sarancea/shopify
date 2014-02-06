@@ -1,6 +1,8 @@
 <?php
 namespace Shopify;
 
+use Phalcon\Http\Client\Provider\Curl;
+
 class Application
 {
     // Content read/write scope
@@ -232,12 +234,42 @@ class Application
      */
     public function generateAuthorizationUrl()
     {
-        $url = $this->getBaseUri() . "/admin/oauth/authorize?client_id={$this->getClientId()}&scope="
+        $authorizationUrl = $this->getBaseUri() . "/admin/oauth/authorize?client_id={$this->getClientId()}&scope="
             . urlencode(implode(',', $this->getScope()));
         if ($this->_redirectUri != '') {
-            $url .= "&redirect_uri=" . urlencode($this->getRedirectUri());
+            $authorizationUrl .= "&redirect_uri=" . urlencode($this->getRedirectUri());
         }
-        return $url;
+        return $authorizationUrl;
+    }
+
+    /**
+     * Fetches authentication token based on authorization code
+     * @param string $authorizationCode
+     * @return string
+     * @throws Exception
+     */
+    public function fetchAccessToken($authorizationCode)
+    {
+        $client = new Curl();
+        $client->setBaseUri($this->getBaseUri());
+        $response = $client->post("/admin/oauth/access_token", [
+            'client_id' => $this->getClientId(),
+            'client_secret' => $this->getClientSecret(),
+            'code' => $authorizationCode,
+        ]);
+
+        //Check if response is ok
+        if ($response->header->statusCode < 200 || $response->header->statusCode > 300) {
+            throw new Exception($response->header->statusMessage, $response->header->statusCode);
+        }
+
+        $responseObject = json_decode($response->body, true);
+        //Validate response
+        if (!isset($responseObject['access_token'])) {
+            throw new Exception('Invalid response : ' . var_export($responseObject, true));
+        }
+
+        return $responseObject['access_token'];
     }
 
 }

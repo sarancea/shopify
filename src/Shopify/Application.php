@@ -226,4 +226,18 @@ class Application
         return $this;
     }
 
+    /**
+     * Generates authorization url
+     * @return string
+     */
+    public function generateAuthorizationUrl()
+    {
+        $url = $this->getBaseUri() . "/admin/oauth/authorize?client_id={$this->getClientId()}&scope="
+            . urlencode(implode(',', $this->getScope()));
+        if ($this->_redirectUri != '') {
+            $url .= "&redirect_uri=" . urlencode($this->getRedirectUri());
+        }
+        return $url;
+    }
+
 }

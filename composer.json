@@ -9,8 +9,8 @@
     ],
     "require": {
         "php": ">=5.4",
-        "ext-phalcon": "1.2.4",
-        "phalcon/incubator": "v1.2.4"
+        "ext-phalcon": "1.2.*",
+        "phalcon/incubator": "v1.2.*"
     },
     "autoload": {
         "psr-0": {

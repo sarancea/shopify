@@ -12,6 +12,12 @@
         "ext-phalcon": "1.2.*",
         "phalcon/incubator": "1.2.x"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/phalcon/incubator.git"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "Shopify": "src"

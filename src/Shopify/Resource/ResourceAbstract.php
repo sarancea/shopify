@@ -30,12 +30,13 @@ abstract class ResourceAbstract
     public function toArray()
     {
         $propertiesList = get_object_vars($this);
+        $returnPropertiesList = [];
 
         //Change key name of property
-        foreach ($propertiesList as &$k => $v) {
-            $k = preg_replace('/^\_/i', '', $k, 1);
+        foreach ($propertiesList as $k => $v) {
+            $returnPropertiesList[preg_replace('/^\_/i', '', $k, 1)] = $v;
         }
 
-        return $propertiesList;
+        return $returnPropertiesList;
     }
 }

@@ -20,6 +20,19 @@ class WebHook extends EntityAbstract
     ];
 
     /**
+     * Verifies if call was done
+     * @param string $data
+     * @param string $hmacHeader
+     * @param string $appSecret
+     * @return bool
+     */
+    public static function verify($data, $hmacHeader, $appSecret)
+    {
+        $calculatedHmac = base64_encode(hash_hmac('sha256', $data, $appSecret, true));
+        return $calculatedHmac == $hmacHeader;
+    }
+
+    /**
      * Get a list of all webhooks for your shop.
      * @return \Shopify\Resource\WebHook[]
      */

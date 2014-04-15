@@ -319,6 +319,7 @@ abstract class EntityAbstract
 
         //Prepare params for request
         if ($method != EntityAbstract::METH_GET && !empty($params)) {
+            $params = json_encode($params);
             $this->_requestOptions[CURLOPT_POSTFIELDS] = $params;
         } elseif ($method == EntityAbstract::METH_GET && !empty($params)) {
             //Set initial query separator

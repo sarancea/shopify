@@ -34,7 +34,8 @@ abstract class ResourceAbstract
 
         //Change key name of property
         foreach ($propertiesList as $k => $v) {
-            $returnPropertiesList[preg_replace('/^\_/i', '', $k, 1)] = $v;
+            if (!is_null($v))
+                $returnPropertiesList[preg_replace('/^\_/i', '', $k, 1)] = $v;
         }
 
         return $returnPropertiesList;

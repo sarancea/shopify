@@ -29,7 +29,7 @@ class ApplicationCharge extends EntityAbstract
     {
 
         // Make an API call
-        $response = $this->_request('/admin/application_charges.json', $applicationCharge->toArray(), ApplicationCharge::METH_POST);
+        $response = $this->_request('/admin/application_charges.json', ['application_charge' => $applicationCharge->toArray()], ApplicationCharge::METH_POST);
 
         return $this->_parseSingleObject($response, 'application_charge', '\Shopify\Resource\ApplicationCharge');
     }

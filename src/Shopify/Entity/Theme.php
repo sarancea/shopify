@@ -50,7 +50,7 @@ class Theme extends EntityAbstract
      */
     public function createTheme(\Shopify\Resource\Theme $theme)
     {
-        $response = $this->_request('/admin/themes.json', $theme->toArray(), EntityAbstract::METH_POST);
+        $response = $this->_request('/admin/themes.json', ['theme' => $theme->toArray()], EntityAbstract::METH_POST);
 
         return $this->_parseSingleObject($response, 'theme', '\Shopify\Resource\Theme');
     }
@@ -70,7 +70,7 @@ class Theme extends EntityAbstract
             throw new Exception('Theme should have ID.');
         }
 
-        $response = $this->_request('/admin/themes/' . $theme->getId() . '.json', $theme->toArray(), EntityAbstract::METH_PUT);
+        $response = $this->_request('/admin/themes/' . $theme->getId() . '.json', ['theme' => $theme->toArray()], EntityAbstract::METH_PUT);
 
         return $this->_parseSingleObject($response, 'theme', '\Shopify\Resource\Theme');
     }

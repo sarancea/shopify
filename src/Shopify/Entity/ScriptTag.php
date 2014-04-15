@@ -68,7 +68,7 @@ class ScriptTag extends EntityAbstract
      */
     public function createScriptTag(\Shopify\Resource\ScriptTag $scriptTag)
     {
-        $response = $this->_request('/admin/script_tags.json', $scriptTag->toArray(), EntityAbstract::METH_POST);
+        $response = $this->_request('/admin/script_tags.json', ['script_tag' => $scriptTag->toArray()], EntityAbstract::METH_POST);
         return $this->_parseSingleObject($response, 'script_tag', '\Shopify\Resource\ScriptTag');
     }
 
@@ -85,7 +85,8 @@ class ScriptTag extends EntityAbstract
             throw new Exception('Script Tag resource should have an ID.');
         }
 
-        $response = $this->_request('/admin/script_tags/' . $scriptTag->getId() . '.json', $scriptTag->toArray(), EntityAbstract::METH_PUT);
+        $response = $this->_request('/admin/script_tags/' . $scriptTag->getId() . '.json',
+            ['script_tag' => $scriptTag->toArray()], EntityAbstract::METH_PUT);
         return $this->_parseSingleObject($response, 'script_tag', '\Shopify\Resource\ScriptTag');
     }
 

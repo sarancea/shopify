@@ -122,7 +122,7 @@ class Metafield extends EntityAbstract
     {
         $response = $this->_request(
             '/admin/metafields.json',
-            $metafield->toArray(),
+            ['metafield' => $metafield->toArray()],
             EntityAbstract::METH_POST
         );
 
@@ -140,7 +140,7 @@ class Metafield extends EntityAbstract
     {
         $response = $this->_request(
             '/admin/products/' . $productId . '/metafields.json',
-            $metafield->toArray(),
+            ['metafield' => $metafield->toArray()],
             EntityAbstract::METH_POST
         );
 
@@ -162,7 +162,7 @@ class Metafield extends EntityAbstract
 
         $response = $this->_request(
             '/admin/metafields/' . $metafield->getId() . '.json',
-            $metafield->toArray(),
+            ['metafield' => $metafield->toArray()],
             EntityAbstract::METH_PUT
         );
 
@@ -185,7 +185,7 @@ class Metafield extends EntityAbstract
 
         $response = $this->_request(
             '/admin/products/' . $productId . '/metafields/' . $metafield->getId() . '.json',
-            $metafield->toArray(),
+            ['metafield' => $metafield->toArray()],
             EntityAbstract::METH_PUT
         );
 

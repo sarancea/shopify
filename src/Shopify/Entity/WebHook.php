@@ -48,7 +48,7 @@ class WebHook extends EntityAbstract
      * @return int
      * @throws \Shopify\Exception
      */
-    public function getWebhooksCount()
+    public function getWebHooksCount()
     {
         $response = $this->_request('/admin/webhooks/count.json', $this->getOptions());
         if (!isset($response['count'])) {
@@ -61,12 +61,12 @@ class WebHook extends EntityAbstract
     /**
      * Get a single webhook by its id.
      *
-     * @param $webhookId
+     * @param $webHookId
      * @return \Shopify\Resource\WebHook
      */
-    public function getWebHook($webhookId)
+    public function getWebHook($webHookId)
     {
-        $response = $this->_request('/admin/webhooks/' . $webhookId . '.json', $this->getOptions());
+        $response = $this->_request('/admin/webhooks/' . $webHookId . '.json', $this->getOptions());
 
         return $this->_parseSingleObject($response, 'webhook', '\Shopify\Resource\WebHook');
     }
@@ -79,7 +79,7 @@ class WebHook extends EntityAbstract
      */
     public function createWebHook(\Shopify\Resource\WebHook $webHook)
     {
-        $response = $this->_request('/admin/webhooks.json', $webHook->toArray(), EntityAbstract::METH_POST);
+        $response = $this->_request('/admin/webhooks.json', ['webhook' => $webHook->toArray()], EntityAbstract::METH_POST);
 
         return $this->_parseSingleObject($response, 'webhook', '\Shopify\Resource\WebHook');
     }
@@ -87,18 +87,18 @@ class WebHook extends EntityAbstract
     /**
      * Update existing webhook
      *
-     * @param \Shopify\Resource\WebHook $webhook
+     * @param \Shopify\Resource\WebHook $webHook
      * @return \Shopify\Resource\ResourceAbstract
      * @throws \Shopify\Exception
      */
-    public function updateWebHook(\Shopify\Resource\WebHook $webhook)
+    public function updateWebHook(\Shopify\Resource\WebHook $webHook)
     {
-        if (intval($webhook->getId()) <= 0) {
+        if (intval($webHook->getId()) <= 0) {
             throw new Exception('ID expected to be more than 0.');
         }
 
-        $response = $this->_request('/admin/webhooks/' . $webhook->getId() . '.json',
-            $webhook->toArray(), EntityAbstract::METH_POST);
+        $response = $this->_request('/admin/webhooks/' . $webHook->getId() . '.json',
+            ['webhook' => $webHook->toArray()], EntityAbstract::METH_POST);
 
         return $this->_parseSingleObject($response, 'webhook', '\Shopify\Resource\WebHook');
     }

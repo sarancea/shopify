@@ -3,6 +3,8 @@
 namespace Shopify\Entity;
 
 use Phalcon\Http\Client\Provider\Curl;
+use Phalcon\Http\Response;
+use Phalcon\Http\ResponseInterface;
 use Shopify\Application;
 use Shopify\Exception;
 use Shopify\Resource\ResourceAbstract;
@@ -52,11 +54,32 @@ abstract class EntityAbstract
     protected $_curlClient;
 
     /**
+     * @var \Phalcon\Http\Client\Response
+     */
+    protected $lastResponse;
+
+    /**
      * Class constructor
      */
     public function __construct()
     {
         $this->_curlClient = new Curl();
+    }
+
+    /**
+     * @return \Phalcon\Http\Client\Response
+     */
+    public function getLastResponse()
+    {
+        return $this->lastResponse;
+    }
+
+    /**
+     * @param \Phalcon\Http\Client\Response $lastResponse
+     */
+    public function setLastResponse($lastResponse)
+    {
+        $this->lastResponse = $lastResponse;
     }
 
 
@@ -316,6 +339,8 @@ abstract class EntityAbstract
                 throw new Exception('Unknown request method');
                 break;
         }
+
+        $this->setLastResponse($response);
 
         //Check if response is ok
         if ($response->header->statusCode < 200 || $response->header->statusCode > 300) {

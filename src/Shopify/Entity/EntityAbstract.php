@@ -59,6 +59,11 @@ abstract class EntityAbstract
     protected $lastResponse;
 
     /**
+     * @var array
+     */
+    protected $lastRequest;
+
+    /**
      * Class constructor
      */
     public function __construct()
@@ -80,6 +85,22 @@ abstract class EntityAbstract
     public function setLastResponse($lastResponse)
     {
         $this->lastResponse = $lastResponse;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastRequest()
+    {
+        return $this->lastRequest;
+    }
+
+    /**
+     * @param array $lastRequest
+     */
+    public function setLastRequest($lastRequest)
+    {
+        $this->lastRequest = $lastRequest;
     }
 
 
@@ -340,6 +361,7 @@ abstract class EntityAbstract
                 break;
         }
 
+        $this->setLastRequest(['uri' => $uri, 'params' => $params, 'method' => $method]);
         $this->setLastResponse($response);
 
         //Check if response is ok

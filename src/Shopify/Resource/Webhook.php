@@ -27,6 +27,7 @@ class WebHook extends ResourceAbstract
      * @var array
      */
     protected $_valid_topics = [
+    private $_valid_topics = [
         'orders/create', 'orders/delete', 'orders/updated', 'orders/paid', 'orders/cancelled', 'orders/fulfilled',
         'orders/partially_fulfilled', 'carts/create', 'carts/update', 'checkouts/create', 'checkouts/update',
         'checkouts/delete', 'products/create', 'products/update', 'products/delete', 'collections/create',

@@ -306,6 +306,7 @@ abstract class EntityAbstract
 
         //Adding Access-Token header
         $extraHeaders['X-Shopify-Access-Token'] = $this->getApplication()->getAccessToken();
+        $extraHeaders['Content-Type'] = 'application/json';
 
         //Set BaseUri to CURL client
         $this->getCurlClient()->setBaseUri($this->getApplication()->getBaseUri());
@@ -352,10 +353,10 @@ abstract class EntityAbstract
                 $response = $this->getCurlClient()->delete($uri, $params);
                 break;
             case EntityAbstract::METH_PUT:
-                $response = $this->getCurlClient()->put($uri, $params);
+                $response = $this->getCurlClient()->put($uri);
                 break;
             case EntityAbstract::METH_POST:
-                $response = $this->getCurlClient()->post($uri, $params);
+                $response = $this->getCurlClient()->post($uri);
                 break;
             default:
                 throw new Exception('Unknown request method');

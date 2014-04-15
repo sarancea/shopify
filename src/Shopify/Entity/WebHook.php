@@ -74,12 +74,12 @@ class WebHook extends EntityAbstract
     /**
      * Create WebHooks
      *
-     * @param \Shopify\Resource\WebHook $webhook
+     * @param \Shopify\Resource\WebHook $webHook
      * @return \Shopify\Resource\ResourceAbstract
      */
-    public function createWebHook(\Shopify\Resource\WebHook $webhook)
+    public function createWebHook(\Shopify\Resource\WebHook $webHook)
     {
-        $response = $this->_request('/admin/webhooks.json', $webhook->toArray(), EntityAbstract::METH_POST);
+        $response = $this->_request('/admin/webhooks.json', $webHook->toArray(), EntityAbstract::METH_POST);
 
         return $this->_parseSingleObject($response, 'webhook', '\Shopify\Resource\WebHook');
     }
